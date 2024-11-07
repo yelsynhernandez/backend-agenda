@@ -1,12 +1,17 @@
 'use strict';
 
 import { ejecutarConsulta } from '../../db/funciones.js';
+import { validarEsquema } from '../../utilities/funciones.js';
 import { respuestaExito, respuestaFracaso } from '../../utilities/mensajes.js';
+import { esquema } from './esquemas.js';
 import { sqlActualizar, sqlEliminar, sqlGuardar, sqlObtener } from './queries.js';
 
 const obtener = async (req, res) => {
     try {
-        const registros = await ejecutarConsulta(sqlObtener);
+        let codigo = req.query.codigo;
+        if(codigo && isNaN(codigo)) return res.status(406).json(respuestaFracaso('El código debe ser numérico'));
+        let parametros = (codigo ? [codigo] : []);
+        const registros = await ejecutarConsulta(sqlObtener(codigo), parametros);
         res.status(200).json(registros.length > 0 ? registros : respuestaExito('No hay registros'));
     } catch (error) {
         console.error(error);
@@ -28,13 +33,18 @@ const obtener = async (req, res) => {
 // };
 
 const guardar = async (req, res) => {
-    const { descripcion } = req.body;
     try {
+        const campos = req.body;
+        delete campos.codigo;
+        campos.codigo = 0;
+        const { error, mensaje, data } = validarEsquema(esquema, campos);
+        if(error) 
+        return res.send('si');
         const result = await ejecutarConsulta(sqlGuardar, [descripcion]);
         res.status(201).json({ id: result.insertId });
     } catch (error) {
         console.error(error);
-        res.status(500).json({ error: 'Error creating data' });
+        res.status(500).json(respuestaFracaso('Ha ocurrido un error'));
     }
 };
 
