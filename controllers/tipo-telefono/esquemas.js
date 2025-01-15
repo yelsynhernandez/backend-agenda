@@ -6,4 +6,4 @@ export const esquema = Joi.object({
     nombre: Joi.string().min(2).max(50).required().messages({...mensajesJoi.requerido, ...mensajesJoi.cadena})
 }).unknown(true);
 
-export const esquemaEliminar = Joi.object({ codigo: esquemaCampo.aduana }).unknown(true);
+export const esquemaEliminar = Joi.object({ codigo: Joi.number().required() }).unknown(true);

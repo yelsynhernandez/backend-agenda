@@ -10,6 +10,7 @@ const obtener = async (req, res) => {
     try {
         let codigo = req.query.codigo;
         if(codigo && isNaN(codigo)) return res.status(406).json(respuestaFracaso('El código debe ser numérico'));
+        
         let parametros = (codigo ? [codigo] : []);
         const registros = await ejecutarConsulta(sqlObtener(codigo), parametros);
         res.status(200).json(registros.length > 0 ? registros : respuestaExito('No hay registros'));

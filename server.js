@@ -1,8 +1,7 @@
 import express from 'express';
 import dotenv from 'dotenv';
 import tipoTelefono from './routes/tipo-telefono.js';
-import { rutaNoEncontrada } from './middlewares/ruta-no-encontrada.js';
-import { checkBody, checkJSON } from './utilities/funciones.js';
+import { checkBody, checkJSON, rutaNoEncontrada } from './middlewares/middlewares.js';
 
 dotenv.config();
 const app = express();
